@@ -1,11 +1,20 @@
+/* This code snippet is a Node.js Express router that handles user-related routes. 
+Here's a breakdown
+of what it does: */
+
+
 var express = require('express');
 var router = express.Router();
 const { queryUsers } = require('../config/db'); // Import the shared query function
 const db = require('../config/db');
 // const requireAuth = require('../middleware/auth');
+const ensureAuthenticated = require('../middleware/auth');
 
 /* GET users listing. */
-router.get('/', async function(req, res, next) {
+/* This `router.get('/', ensureAuthenticated, async function(req, res, next) { ... }` function is
+handling a GET request to the '/users' endpoint. Here's a breakdown of what it does: */
+
+router.get('/', ensureAuthenticated, async function(req, res, next) {
   // res.send('respond with a resource');
   // const users = await queryUsers();
   // res.json(db.users);

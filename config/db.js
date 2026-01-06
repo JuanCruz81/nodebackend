@@ -1,3 +1,7 @@
+/* The `// db.js` file is a JavaScript file that contains code related to database connections and
+operations. Here's a breakdown of what the code in `db.js` is doing: */
+/* The `// db.js` file is a JavaScript file that contains code related to database connections and
+operations. Here's a breakdown of what the code in `db.js` is doing: */
 // db.js
 // const mysql = require('mysql2/promise');
 
@@ -13,6 +17,29 @@
 // });
 
 // module.exports = pool; // Export the pool for use in other files
+
+// to test the connection
+
+const { Pool } = require('pg');
+require('dotenv').config(); // Loads credentials from .env
+
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT || 5432,
+  max: 20,                   // Max number of concurrent connections
+  idleTimeoutMillis: 30000,  // Close idle connections after 30s
+  connectionTimeoutMillis: 2000, // Error if connection takes > 2s
+});
+
+// Log pool errors to prevent application crashes
+pool.on('error', (err) => {
+  console.error('Unexpected error on idle database client', err);
+  process.exit(-1);
+});
+
 
 // Mocking the database with a simple array
 const db = {
@@ -32,8 +59,13 @@ const db = {
 
 
 // Mimic a database query with a Promise to keep your Express code clean
+/* The commented out line `// const queryUsers = async () => {` is defining an asynchronous function
+named `queryUsers`. This function is likely intended to query the database for users, but it is
+currently commented out and not being used in the code. */
 // const queryUsers = async () => {
 //   return users;
 // };
 
-module.exports = db; // Export the mock database object
+module.exports = {
+  query: (text, params) => pool.query(text, params),
+}; // Export the mock database object

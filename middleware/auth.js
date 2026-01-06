@@ -10,4 +10,15 @@ const requireAuth = (req, res, next) => {
   }
 };
 
-module.exports = requireAuth;
+function ensureAuthenticated(req, res, next) {
+  // Check for a session (if using express-session) or a token
+  if (req.session && req.session.user) {
+    return next(); // User is authorized, proceed to the route
+  }
+  
+  // If not authorized, redirect to login
+  console.log("Unauthorized access attempt. Redirecting to /login...");
+  res.redirect('/login');
+}
+
+module.exports = ensureAuthenticated;

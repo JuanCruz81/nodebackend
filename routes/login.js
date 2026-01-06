@@ -49,6 +49,8 @@ router.post('/', async (req, res) => {
     //   } 
     //   res.status(401).json({ error: "Invalid credentials" }); 
 
+    // test the connection to db
+    // add new comment to save it on dev
     try {
         // Use parameterized queries to prevent SQL injection
         const result = await pool.query('SELECT * FROM users WHERE username = $1', 

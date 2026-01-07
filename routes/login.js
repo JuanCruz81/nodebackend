@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 const pool = require('../config/db'); // Import the shared pool
 
+// with the above code, do a description of what it does
+
 /* GET login page. */
 router.get('/', async function (req, res, next) {
     // res.render('index', { title: 'Express' });
@@ -21,7 +23,7 @@ router.get('/', async function (req, res, next) {
             <form action="/login" method="POST">
                 <h2>Login</h2>
                 <div>
-                    <label>Username:</label><br>
+                    <label>User name:</label><br>
                     <input type="text" name="username" required>
                 </div>
                 <div>
@@ -49,15 +51,24 @@ router.post('/', async (req, res) => {
     //   } 
     //   res.status(401).json({ error: "Invalid credentials" }); 
 
+    // test the connection to db
+    // add new comment to save it on dev
     try {
         // Use parameterized queries to prevent SQL injection
-        const result = await pool.query('SELECT * FROM users WHERE username = $1', 
-            [email]);
+        // const result = await pool.query('SELECT * FROM users WHERE username = $1', 
+        //    [username]);
+        const result = await pool.query(
+            'SELECT * FROM usersloginvalidation WHERE username = $1 AND password = $2',
+            [username, password]
+        );
         const user = result.rows[0];
 
-        if (user && await bcrypt.compare(password, user.password)) {
+        if (user && await bcrypt.compare(
+            password, // password from login form
+            user.password) // hashed password from database
+        ) {
             req.session.userId = user.id;
-            return res.redirect('/dashboard');
+            return res.redirect('/users');
         }
         res.status(401).send("Invalid credentials");
     } catch (err) {
